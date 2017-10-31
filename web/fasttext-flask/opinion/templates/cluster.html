@@ -1,0 +1,373 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>基于聚类的海量微博主题发现系统</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+        <!--Google Fonts link-->
+        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,400i,600,600i,700,700i" rel="stylesheet">
+
+
+        <link rel="stylesheet" href="/static/assets/css/iconfont.css">
+        <link rel="stylesheet" href="/static/assets/css/slick/slick.css">
+        <link rel="stylesheet" href="/static/assets/css/slick/slick-theme.css">
+        <link rel="stylesheet" href="/static/assets/css/font-awesome.min.css">
+        <link rel="stylesheet" href="/static/assets/css/jquery.fancybox.css">
+        <link rel="stylesheet" href="/static/assets/css/bootstrap.css">
+        <link rel="stylesheet" href="/static/assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/static/assets/css/magnific-popup.css">
+
+
+        <!--For Plugins external css-->
+        <link rel="stylesheet" href="/static/assets/css/plugins.css" />
+
+        <!--Theme custom css -->
+        <link rel="stylesheet" href="/static/assets/css/style.css">
+
+        <!--Theme Responsive css-->
+        <link rel="stylesheet" href="/static/assets/css/responsive.css" />
+        <script type="text/javascript">
+            function change_cluster_long(){
+              var data = $("#data_num_long").val();
+              ceil = Math.round(Math.sqrt(data))
+              floor = ceil - 2
+              // alert(ceil)
+              $("#clus_num_min").val(floor)
+              $("#clus_num_max").val(ceil)
+            }
+            function change_cluster_short(){
+              var data = $("#data_num_short").val();
+              ceil = Math.round(Math.sqrt(data))
+              floor = ceil - 2
+              // alert(ceil)
+              $("#clus_num_min_short").val(floor)
+              $("#clus_num_max_short").val(ceil)
+            }
+        </script>
+        <script src="/static/assets/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+    </head>
+    <body data-spy="scroll" data-target=".navbar-collapse">
+
+        <div class='preloader'><div class='loaded'>&nbsp;</div></div>
+        <div class="culmn">
+            <header id="main_menu" class="header navbar-fixed-top">
+                <div class="main_menu_bg">
+                    <div class="container">
+                        <div class="row">
+                            <div class="nave_menu">
+                                <nav class="navbar navbar-default">
+                                    <div class="container-fluid">
+                                        <!-- Brand and toggle get grouped for better mobile display -->
+                                        <div class="navbar-header">
+                                            <a class="navbar-brand" href="#home">
+                                                <img src="/static/assets/images/logo.png"/>
+                                            </a>
+                                        </div>
+                                        <!-- Collect the nav links, forms, and other content for toggling -->
+                                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                                            <ul class="nav navbar-nav navbar-right">
+                                                <li><a href="#home">HOME</a></li>
+                                                <li><a href="#short">SHORT TEXT CLUSTER</a></li>
+                                                <li><a href="#long">LONG DOCUMENT CLUSTER</a></li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                </nav>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </header> <!--End of header -->
+
+            <!--home Section -->
+            <section id="home" class="home">
+                <div class="overlay">
+                    <div class="home_skew_border">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm-12 ">
+                                    <div class="main_home_slider text-center">
+                                        <div class="single_home_slider">
+                                            <div class="main_home wow fadeInUp" data-wow-duration="700ms">
+                                                <h1>海量微博主题发现系统</h1>
+                                                <div class="separator"></div>
+                                                <p></p>
+                                                <div class="home_btn">
+                                                    <a href="#short" class="btn btn-default">短文本聚类</a>&nbsp;&nbsp;&nbsp;
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <a href="#long" class="btn btn-default"> &nbsp;&nbsp;长文本聚类&nbsp;&nbsp; </a>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="scrooldown">
+                            <a href="#short"><i class="fa fa-arrow-down"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </section><!--End of home section -->
+            <hr />
+            <!-- Short text cluster section -->
+            <section id="short" class="history sections">
+                <div class="container">
+                    <div class="row">
+                        <div class="main_history">
+                            <div class="col-sm-6" style="vertical-align: middle">
+                                <div class="single_history_img">
+                                    <img src="/static/assets/images/stab1.png" alt="" />
+                                </div>
+
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="single_history_content">
+
+                                    {% block content %}
+                                    <div class="single_contant_left padding-top-60 padding-bottom-60">
+                                        <form action="short_calculate" id="formid" method = "post" enctype="multipart/form-data">
+                                            <div class="col-lg-8 col-md-8 col-sm-10 col-lg-offset-2 col-md-offset-2 col-sm-offset-1">
+                                              <div class="head_title">
+                                                  <h2>输入参数</h2>
+                                              </div>
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <input type="file" class="form-control" name="file" placeholder="First Name" >
+                                                            <p style="color:grey">*上传文件格式可为txt、csv、jl；其中，jl文件每一行是一条文本，每条文本须包括"id","text"等字段。
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                          <select name="method" class="form-control">
+                                                            <option value="1">TFIDF+Kmeans</option>
+                                                            <option value="2">WNTM+Kmeans</option>
+                                                            <option value="3">Ngram+Kmeans</option>
+                                                            <option value="4">Ncut+NMF</option>
+                                                            <option value="5">DMM</option>
+                                                            <option value="6">DSTM</option>
+                                                            <option value="7">w2v+Kmeans</option>
+                                                            <option value="8">Ngram+TopicModel</option>
+                                                          </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <input id="data_num_short" type="text" class="form-control" name="data_num" onchange="change_cluster_short()" placeholder="上传文件的数据量" >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <input id="clus_num_min_short" type="text"  name="clus_num_min" placeholder="聚类数量下限" > --
+                                                            <input id="clus_num_max_short" type="text"  name="clus_num_max" placeholder="聚类数量上限" >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control" name="topics_num" placeholder="主题词数量" >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control" name="docs_num" placeholder="最多代表文本数量" >
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="">
+                                                    <input type="submit" value="计算并下载" class="btn btn-lg">
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                    {% endblock content %}
+                                </div>
+                            </div>
+                        </div>
+                    </div><!--End of row -->
+                </div><!--End of container -->
+            </section><!--End of history -->
+            <hr />
+            <!-- Long Document cluster section -->
+            <section id="long" class="history sections">
+                <div class="container">
+                    <div class="row">
+                        <div class="main_history">
+                            <div class="col-sm-6" style="vertical-align: middle">
+                                <div class="single_history_img">
+                                    <img src="/static/assets/images/stab2.png" alt="" />
+                                </div>
+
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="single_history_content">
+
+                                    <div class="single_contant_left padding-top-60 padding-bottom-60">
+                                        <form action="long_calculate" id="formid" method = "post" enctype="multipart/form-data">
+                                            <div class="col-lg-8 col-md-8 col-sm-10 col-lg-offset-2 col-md-offset-2 col-sm-offset-1">
+                                              <div class="head_title">
+                                                  <h2>输入参数</h2>
+                                              </div>
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <input type="file" class="form-control" name="file" placeholder="First Name" >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <p style="color:grey">*上传文件格式可为txt、csv、jl；其中，jl文件每一行是一条文本，每条文本须包括"id","text"等字段。
+                                                </p>
+
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                          <select name="method" class="form-control">
+                                                            <option value="1">TFIDF+Kmeans</option>
+                                                            <option value="2">Ngram+Kmeans</option>
+                                                            <option value="3">TFIDF+NMF</option>
+                                                            <option value="4">w2v+Kmeans</option>
+                                                          </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <input id="data_num_long" type="text" class="form-control" name="data_num" onchange="change_cluster_long()" placeholder="上传文件的数据量" >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                          <input id="clus_num_min" type="text"  name="clus_num_min" placeholder="聚类数量下限" > --
+                                                          <input id="clus_num_max" type="text"  name="clus_num_max" placeholder="聚类数量上限" >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control" name="topics_num" placeholder="主题词数量" >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control" name="docs_num" placeholder="最多代表文本数量" >
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="">
+                                                    <input type="submit" value="计算并下载" class="btn btn-lg">
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div><!--End of row -->
+                </div><!--End of container -->
+            </section><!--End of history -->
+            <hr />
+
+            <section id="trial" class="trial text-center wow fadeIn"  data-wow-duration="2s" data-wow-dealy="1.5s">
+                <div class="main_trial_area">
+                    <div class="video_overlay sections">
+                        <div class="container">
+                            <div class="row">
+                                <div class="main_trial">
+                                    <div class="col-sm-12">
+                                        <h2>Let's Get Started Now. </h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section><!-- End of Trial section -->
+
+
+            <!--Footer section-->
+            <section class="footer">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="main_footer">
+                                <div class="row">
+                                    <div class="col-sm-6 col-xs-12">
+                                        <div class="flowus">
+                                            <a href=""><i class="fa fa-facebook"></i></a>
+                                            <a href=""><i class="fa fa-twitter"></i></a>
+                                            <a href=""><i class="fa fa-google-plus"></i></a>
+                                            <a href=""><i class="fa fa-instagram"></i></a>
+                                            <a href=""><i class="fa fa-youtube"></i></a>
+                                            <a href=""><i class="fa fa-dribbble"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section><!-- End off footer Section-->
+
+
+        </div>
+
+        <!-- START SCROLL TO TOP  -->
+
+        <div class="scrollup">
+            <a href="#"><i class="fa fa-chevron-up"></i></a>
+        </div>
+
+        <script src="/static/assets/js/vendor/jquery-1.11.2.min.js"></script>
+        <script src="/static/assets/js/vendor/bootstrap.min.js"></script>
+
+        <script src="/static/assets/js/jquery.magnific-popup.js"></script>
+        <script src="/static/assets/js/jquery.mixitup.min.js"></script>
+        <script src="/static/assets/js/jquery.easing.1.3.js"></script>
+        <script src="/static/assets/js/jquery.masonry.min.js"></script>
+
+        <!--slick slide js -->
+        <script src="/static/assets/css/slick/slick.js"></script>
+        <script src="/static/assets/css/slick/slick.min.js"></script>
+
+
+        <script src="/static/assets/js/plugins.js"></script>
+        <script src="/static/assets/js/main.js"></script>
+
+    </body>
+</html>
