@@ -4,59 +4,19 @@ import fasttext
 import jieba
 import sys
 import json
-from kafka import KafkaConsumer
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
 kafka_list = ["10.120.17.73:9092"]
 
 def read_from_kafka():
-	consumer = KafkaConsumer('sim_news_doc', bootstrap_servers=kafka_list, client_id='client_id1', group_id='group_id1')
-        i = 0
-        t = 1
-        results = []
-	for msg in consumer:
-            i += 1
-            emo = {}
-            news_con = json.loads(msg.value)
-            news_id = news_con['id'] 
-            c_t = news_con['t'] + news_con['c']
-            print 'id:', news_id, i
-            emotion = interface_fasttext(c_t)
-            emo['id'] = news_id
-            emo['emotion'] = emotion
-            emo['c_t'] = c_t
-            results.append(emo)
-            if i % 100 == 0:
-                fw = file('results/emotion_'+str(t)+'.jl', 'w')
-                fw.write(json.dumps(results))
-                fw.close()
-                results = []
-                t += 1
-
-def interface_fasttext(sen):
-	sen = split_sentence(sen)
-	classifier = fasttext.load_model('token/fast.model.bin', label_prefix='__label__')
-	texts = [sen]
-	labels = classifier.predict(texts, k=1)
-	return labels[0][0]
-
-def split_sentence(sen):
-	if isinstance(sen, unicode):
-		sen = sen.encode()
-	sen_split = jieba.cut(sen)
-	#print sen_split, type(sen_split)
-	new_sen_list = []
-	for se in sen_split:
-		if se.encode().isalpha():
-			new_sen_list.append(se.strip())
-		else:
-			se_list = list(se.strip())
-			new_sen_list.append(' '.join(se_list))
-	new_sen = ' '.join(new_sen_list)
-	new_sen = new_sen.replace('  ', ' ')
-	#print new_sen, 'new_sen'
-	return new_sen
+	fw = file('results/news_emotion.txt', 'w')
+	for i in range(1, 11):
+		with open('results/emotion_'+str(i)+'.jl') as f:
+			content = json.loads(f.read())
+			for news in content:
+			    fw.write(news['id']+'  '+news['emotion']+'  '+ news['c_t'].replace('\n', '')+'\n\n')
+	fw.close()
 
 if __name__ == '__main__':
 	
